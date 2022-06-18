@@ -1,0 +1,17 @@
+{
+  "debug": true,
+  "server": {
+    "endpoint": "/api",
+    "port": 30300,
+    "secretKey": "test123"
+  },
+  "requests": [
+    {
+      "name": "test",
+      "path": "/test",
+      "methods": ["GET"],
+      "allowWeb": true,
+      "allowWebsocket": true
+    }
+  ]
+}
