@@ -1,4 +1,4 @@
------------------ RWST v1.0.0
+----------------- RWST v1.1.0
 ----------------- FiveM RealWorld MAC
 ----------------- https://discord.gg/realw
 
@@ -9,7 +9,7 @@ lua54 "yes"
 
 author "MAC <fivemrealw@gmail.com>"
 description "RWST"
-version "1.0.0"
+version "1.1.0"
 
 server_only "yes"
 

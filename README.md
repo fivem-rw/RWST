@@ -1,13 +1,19 @@
 # RWST
 
-```v1.0.0```
+```v1.1.0```
+
+<br>
+
+## 업데이트 v.1.1.0
+- 크로스도메인 지원 (server.crossDomain 설정 참조)
+- 웹소켓 지원
 
 <br>
 
 ## 소개
 
 RWST는 FiveM서버에서 외부와의 양방향 통신을 위한 리얼월드 웹 인터페이스 입니다.<br>
-현재 HTTP (GET) 만 지원되며 추후 HTTP POST, Websocket 도 지원될 예정입니다.
+HTTP GET, Websocket 으로 FiveM 서버와 양방향으로 통신할 수 있습니다.
 
 <br>
 
@@ -20,23 +26,23 @@ RWST는 FiveM서버에서 외부와의 양방향 통신을 위한 리얼월드 �
 
 <br>
 
-## 예제
+## HTTP GET 예제
 현재 온라인 상태인 리얼월드 VRP 에 적용된 RWST 입니다.<br>
 첨부한 RWST-VRPExample 리소스가 그대로 적용되었습니다. 아래의 URL로 요청하여 테스트 할 수 있습니다.
 
 - 현재 접속자 목록
 ```
-https://rwst.realw.kr/api/GetUserList
+GET https://rwst.realw.kr/api/GetUserList
 ```
 
 - 사용자 데이터
 ```
-https://rwst.realw.kr/api/GetUserData?id=[고유번호]
+GET https://rwst.realw.kr/api/GetUserData?id=[고유번호]
 ```
 
 - 사용자 킥
 ```
-https://rwst.realw.kr/api/Kick?id=[고유번호]
+GET https://rwst.realw.kr/api/Kick?id=[고유번호]
 ```
 
 - config.json 설정
@@ -110,10 +116,54 @@ GET http://서버IP/[server.endpoint][requests[].path]
 ```
 <br>
 
+## 웹소켓 
+
+- 웹소켓은 socket.io 클라이언트를 이용하여 서버에 연결할 수 있습니다.
+- socket.io 버전 v4 이상
+
+### 웹소켓 RWST LUA 함수
+
+- 현재 연결된 클라이언트를 표시합니다.
+```js
+RWST:WSGetConnectors(): string[]
+```
+
+- 클라이언트의 메세지를 수신 합니다.
+```js
+RWST:WSReceive(callback: function): void
+```
+
+(예시)
+```js
+RWST:WSReceive(
+  function(name, data, event)
+    -- name: 메세지 이름
+    -- data: 메세지 데이터
+    -- event.id: 클라이언트 연결 id
+    -- event.send(name, ...args): 메세지를 보낸 클라이언트에게 메세지를 전송합니다. (응답)
+  end
+)
+```
+
+- 연결된 특정 클라이언트에게 메세지를 전송합니다.
+```js
+RWST:WSSend(id: string, name: string, ...args: any): void
+```
+
+- 연결된 모든 클라이언트에게 메세지를 전송합니다.
+```js
+RWST:WSBroadcast(name: string, ...args: any): void
+```
+
+<br>
+
 ## 엔드포인트 보안
 엔드포인트는 공개적으로 노출될 수 있으므로 제3자가 서버에 승인되지 않은 요청을 보낼 수 있습니다.<br>
 이를 방지 하기 위해 `config.json` 에서 `server.secretKey` 보안키를 설정하는 것을 권장합니다.<br>
 보안키가 설정되면 엔드포인트 요청시 서버는 HTTP 헤더 `X-RWST-Credential` 와 보안키가 일치하지 않는 모든 요청을 거부합니다.
+
+### 웹소켓 보안
+보안키가 설정 됬을 경우 웹소켓은 클라이언트에서 socket.io 연결시 옵션 항목에 `query.secretKey` 로 설정한 보안키가 전송되어야만 합니다. 해당 보안키가 일치하지 않을 경우 서버는 해당 클라이언트의 연결을 거부합니다.
 
 <br>
 
@@ -159,13 +209,19 @@ GET http://서버IP/[server.endpoint][requests[].path]
     <td>server.websocket</td>
     <td>BOOLEAN</td>
     <td>false</td>
-    <td>웹소켓을 활성화합니다. (추후지원예정)</td>
+    <td>웹소켓을 활성화합니다.</td>
   </tr>
   <tr>
     <td>server.websocketPort</td>
     <td>INT</td>
     <td>30301</td>
-    <td>웹소켓의 포트를 지정합니다. (추후지원예정)</td>
+    <td>웹소켓의 포트를 지정합니다.</td>
+  </tr>
+  <tr>
+    <td>server.crossDomain</td>
+    <td>BOOLEAN</td>
+    <td>false</td>
+    <td>웹 접근시 크로스도메인을 허용합니다.</td>
   </tr>
   <tr>
     <td>requests</td>
@@ -189,7 +245,7 @@ GET http://서버IP/[server.endpoint][requests[].path]
     <td>requests[].methods</td>
     <td>ARRAY</td>
     <td>--</td>
-    <td>경로의 요청 방법을 지정합니다. (현재 GET 방식만 지원)</td>
+    <td>경로의 요청 방법을 지정합니다. (GET: HTTP_GET, WS: Websocket)</td>
   </tr>
   <tr>
     <td>requests[].allowWeb</td>
@@ -200,8 +256,8 @@ GET http://서버IP/[server.endpoint][requests[].path]
   <tr>
     <td>requests[].allowWebsocket</td>
     <td>BOOLEAN</td>
-    <td>false</td>
-    <td>웹소켓에서의 접근을 허용합니다. (추후지원예정)</td>
+    <td>true</td>
+    <td>웹소켓에서의 접근을 허용합니다.</td>
   </tr>
 </table>
 
