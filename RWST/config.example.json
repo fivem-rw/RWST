@@ -3,13 +3,20 @@
   "server": {
     "endpoint": "/api",
     "port": 30300,
-    "secretKey": "test123"
+    "secretKey": "",
+    "websocket": false,
+    "websocketPort": 30301,
+    "responseTimeout": 5000,
+    "crossDomain": false,
+    "rateLimit": false,
+    "rateLimitTime": 60000,
+    "rateLimitMax": 100
   },
   "requests": [
     {
       "name": "test",
       "path": "/test",
-      "methods": ["GET"],
+      "methods": ["GET", "POST", "WS"],
       "allowWeb": true,
       "allowWebsocket": true
     }

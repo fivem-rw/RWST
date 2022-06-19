@@ -1,8 +1,12 @@
 # RWST
 
-```v1.1.0```
+```v1.1.1```
 
 <br>
+
+## 업데이트 v.1.1.1
+- HTTP_POST 지원
+- RateLimiter 지원
 
 ## 업데이트 v.1.1.0
 - 크로스도메인 지원 (server.crossDomain 설정 참조)
@@ -13,7 +17,7 @@
 ## 소개
 
 RWST는 FiveM서버에서 외부와의 양방향 통신을 위한 리얼월드 웹 인터페이스 입니다.<br>
-HTTP GET, Websocket 으로 FiveM 서버와 양방향으로 통신할 수 있습니다.
+HTTP_GET, HTTP_POST, Websocket 으로 FiveM 서버와 양방향으로 통신할 수 있습니다.
 
 <br>
 
@@ -222,6 +226,24 @@ RWST:WSBroadcast(name: string, ...args: any): void
     <td>BOOLEAN</td>
     <td>false</td>
     <td>웹 접근시 크로스도메인을 허용합니다.</td>
+  </tr>
+  <tr>
+    <td>server.rateLimit</td>
+    <td>BOOLEAN</td>
+    <td>false</td>
+    <td>한 IP당 엔드포인트 호출 횟수 제한을 활성화 합니다.</td>
+  </tr>
+  <tr>
+    <td>server.rateLimitTime</td>
+    <td>INT</td>
+    <td>60000</td>
+    <td>호출 횟수 제한 시간 (단위: ms)</td>
+  </tr>
+  <tr>
+    <td>server.rateLimitMax</td>
+    <td>INT</td>
+    <td>100</td>
+    <td>호출 횟수 제한 시간 당 호출 가능 횟수 ('rateLimitTime' 이 '60000' 이고 'rateLimitMax' 가 '100' 일 경우 한 IP에서 1분당 100번까지 호출 가능합니다.)</td>
   </tr>
   <tr>
     <td>requests</td>
