@@ -1,6 +1,7 @@
 local Tunnel = module("vrp", "lib/Tunnel")
 local Proxy = module("vrp", "lib/Proxy")
 
+vrp_rw_userlistS = {}
 vRP = Proxy.getInterface("vRP")
 
 local RequestGetUserList = function(response, limit)
@@ -50,17 +51,17 @@ end
 RWST:RequestEventHandler(
   function(event, response)
     if event.name == "GetUserList" then
-      local limit = event.body.limit or 1000
+      local limit = parseInt(event.body.limit) or 1000
       RequestGetUserList(response, limit)
     elseif event.name == "GetUserData" then
-      local userId = event.body.id
+      local userId = parseInt(event.body.id)
       if userId then
         RequestGetUserData(response, userId)
       else
         response({})
       end
     elseif event.name == "Kick" then
-      local userId = event.body.id
+      local userId = parseInt(event.body.id)
       if userId then
         local resData = {}
         local source = vRP.getUserSource({userId})
